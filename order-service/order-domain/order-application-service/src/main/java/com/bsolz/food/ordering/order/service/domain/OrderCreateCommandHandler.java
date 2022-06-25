@@ -31,11 +31,12 @@ public class OrderCreateCommandHandler {
 
     private final OrderCreatedPaymentRequestMessagePublisher orderCreatedPaymentRequestMessagePublisher;
 
-
+    private final ApplicationDomainEventPublisher applicationDomainEventPublisher;
     public CreateOrderResponse createOrder(CreateOrderCommand createOrderCommand) {
 
         OrderCreatedEvent orderCreatedEvent =  orderCreateHelper.persistOrder(createOrderCommand);
         orderCreatedPaymentRequestMessagePublisher.publish(orderCreatedEvent);
+        applicationDomainEventPublisher.publish(orderCreatedEvent);
         return orderDataMapper.orderToCreateOrderResponse(orderCreatedEvent.getOrder(), "");
     }
 
